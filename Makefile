@@ -15,7 +15,7 @@ BUILD_DIR := $(addprefix build/,$(MODULES))
 
 SRC := $(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
 OBJ := $(patsubst src/%.cpp,build/%.o,$(SRC))
-INCLUDES := $(addprefix -I,$(SRC_DIR))
+INCLUDES := -Iinclude $(addprefix -I,$(SRC_DIR))
 
 
 vpath %.cpp $(SRC_DIR)
