@@ -1,0 +1,3 @@
+[submodule "glide"]
+	path = glide
+	url = https://github.com/alextrevisan/glide
