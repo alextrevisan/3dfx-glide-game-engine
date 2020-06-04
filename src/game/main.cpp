@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
-
+#include <MainGame.h>
+#include <GameEngine.h>
 #include <Vector3.h>
 
 struct Color
@@ -27,13 +28,13 @@ class GameObject
     public:
     GameObject(const std::string& _name)
     :name(_name){}
-    
-    template<class T>
-    constexpr T& AddComponent()
+
+    template<class T, typename ...N>
+    constexpr T& AddComponent(N...args)
     {
-        objects[currentObjIdx] = T();
-        auto* object = &objects[currentObjIdx++];
-        return *static_cast<T*>(object);
+        auto item = new T(args...);
+        objects.emplace_back(item);
+        return item;
     }
 
     struct transform
@@ -42,25 +43,23 @@ class GameObject
     }transform;
 
     //private:
-    std::array<Component, 16> objects;
-    uint8_t currentObjIdx = 0;
+    std::vector<Component*> objects;
     std::string name;
-    
+
 };
 
-int main()
+int main(int argc, char* argv[])
 {
-    // Make a game object
-    GameObject lightGameObject("The Light123412");// = new GameObject("The Light");
+    try
+    {
+        GameEngine* engine = new GameEngine();
+        MainGame* game = new MainGame();
+        return engine->Start();
+    }
+    catch(const std::exception &ex)
+    {
+        printf("%s\n", ex.what());
+    }
 
-    // Add the light component
-    auto& lightComp = lightGameObject.AddComponent<Light>();
-
-    // Set color and position
-    lightComp.color = Color::blue;
-
-    // Set the position (or any transform property)
-    lightGameObject.transform.position = Vector3(0, 5, 0);
-    
-    return sizeof(std::vector<Component>);
+    return 0;
 }
