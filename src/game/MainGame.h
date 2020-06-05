@@ -6,11 +6,10 @@ class MainGame: public MonoBehaviour
 {
     public:
         MainGame();
-        virtual ~MainGame();
+
 
     protected:
-
-    private:
+        virtual ~MainGame();
 };
 
 #endif // MAINGAME_H

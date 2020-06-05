@@ -7,7 +7,8 @@ class MonoBehaviour
 {
     public:
         MonoBehaviour();
-        virtual ~MonoBehaviour();
+    private:
+
 
     protected:
         virtual void Start(){};
@@ -17,7 +18,8 @@ class MonoBehaviour
         //virtual void OnGUI(){};
         //virtual void OnDisable(){};
         //virtual void OnEnable(){};
-    friend class GameEngine;
+        virtual ~MonoBehaviour();
+        friend class GameEngine;
     private:
 };
 

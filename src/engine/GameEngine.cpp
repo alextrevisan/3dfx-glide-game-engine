@@ -24,5 +24,11 @@ int GameEngine::Start()
 
 GameEngine::~GameEngine()
 {
+    for(auto* item: BehaviourList::GetInstance().Items())
+    {
+        delete item;
+    }
+
+
     //dtor
 }
