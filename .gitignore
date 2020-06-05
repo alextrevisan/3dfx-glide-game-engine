@@ -55,4 +55,8 @@
 bin/
 obj/
 
+### Other files ###
+build/stdout.txt
+build/stderr.txt
+
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudiocode
