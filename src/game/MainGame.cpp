@@ -25,7 +25,7 @@ void MainGame::Update()
 {
     FxI32 wLimits;
     grGet(GR_WDEPTH_MIN_MAX, 8, &wLimits);
-    grBufferClear(0xFF0000, 0, wLimits);
+    grBufferClear(0xFF000000, 0, wLimits);
 
 
 	  grDrawTriangle(&GourTris.v1,&GourTris.v2,

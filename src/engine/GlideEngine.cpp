@@ -86,7 +86,7 @@ void GlideEngine::InitGlideSubsystem()
     assert( VoodooType() );
     glideContext = grSstWinOpen((FxU32)hWndMain,
                                 GR_RESOLUTION_1024x768, GR_REFRESH_60Hz,
-                                GR_COLORFORMAT_ABGR,
+                                GR_COLORFORMAT_RGBA,
                                 GR_ORIGIN_LOWER_LEFT,
                                 2, 1);
     if (glideContext == 0)
