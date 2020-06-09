@@ -1,0 +1,4 @@
+
+[submodule "glide"]
+	path = glide
+	url = git@github.com:alextrevisan/glide.git
