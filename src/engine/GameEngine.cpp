@@ -18,7 +18,10 @@ int GameEngine::Start()
         {
             item->Update();
         }
+        BehaviourList::GetInstance().Apply();
+        IsRunning = false;
     }
+
     return 0;
 }
 

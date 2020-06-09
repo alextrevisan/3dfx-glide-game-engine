@@ -1,13 +1,13 @@
 #include "BehaviourList.h"
 
-static BehaviourList& BehaviourList::GetInstance()
+BehaviourList& BehaviourList::GetInstance()
 {
     if(!Instance)
         Instance = new BehaviourList();
     return *Instance;
 }
 
-std::vector<MonoBehaviour*>& BehaviourList::Items()
+const std::vector<MonoBehaviour*>& BehaviourList::Items()
 {
     return MonoBehaviourList;
 }
@@ -20,12 +20,31 @@ void BehaviourList::Add(MonoBehaviour* item)
 void BehaviourList::Erase(MonoBehaviour* item)
 {
     const auto it = std::find(MonoBehaviourList.begin(), MonoBehaviourList.end(),item);
-    if(it != MonoBehaviourList.end())
-        MonoBehaviourList.erase(it);
+    MonoBehaviourListToRemove.push_back(it);
 }
+
+void BehaviourList::Apply()
+{
+    for(auto it: MonoBehaviourListToRemove)
+    {
+        MonoBehaviourList.erase(it);
+    }
+    MonoBehaviourListToRemove.clear();
+}
+
+
 
 BehaviourList::BehaviourList()
 {
 
 }
-static BehaviourList* BehaviourList::Instance = nullptr;
+
+BehaviourList::~BehaviourList()
+{
+    for(auto it: MonoBehaviourList)
+    {
+        delete it;
+    }
+    MonoBehaviourList.clear();
+}
+BehaviourList* BehaviourList::Instance = nullptr;

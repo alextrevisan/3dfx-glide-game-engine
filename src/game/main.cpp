@@ -24,37 +24,12 @@ class Light: public Component
     int color;
 };
 
-class GameObject
-{
-    public:
-    GameObject(const std::string& _name)
-    :name(_name){}
-
-    template<class T, typename ...N>
-    constexpr T& AddComponent(N...args)
-    {
-        auto item = new T(args...);
-        objects.emplace_back(item);
-        return item;
-    }
-
-    struct transform
-    {
-        Vector3 position;
-    }transform;
-
-    //private:
-    std::vector<Component*> objects;
-    std::string name;
-
-};
-
 int main(int argc, char* argv[])
 {
     try
     {
         GameEngine engine;
-        engine.AddComponent<MainGame>()
+        engine.AddComponent<MainGame>();
         return engine.Start();
 
     }

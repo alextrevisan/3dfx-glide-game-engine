@@ -36,12 +36,16 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/BehaviourList.h" />
+		<Unit filename="include/Component.h" />
 		<Unit filename="include/GameEngine.h" />
+		<Unit filename="include/GameObject.h" />
 		<Unit filename="include/GlideEngine.h" />
 		<Unit filename="include/MonoBehaviour.h" />
 		<Unit filename="include/Vector3.h" />
+		<Unit filename="src/Component.cpp" />
 		<Unit filename="src/engine/BehaviourList.cpp" />
 		<Unit filename="src/engine/GameEngine.cpp" />
+		<Unit filename="src/engine/GameObject.cpp" />
 		<Unit filename="src/engine/GlideEngine.cpp" />
 		<Unit filename="src/engine/MonoBehaviour.cpp" />
 		<Unit filename="src/game/MainGame.cpp" />

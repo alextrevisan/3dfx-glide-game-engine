@@ -19,7 +19,9 @@ class MonoBehaviour
         //virtual void OnDisable(){};
         //virtual void OnEnable(){};
         virtual ~MonoBehaviour();
+
         friend class GameEngine;
+        friend class BehaviourList;
     private:
 };
 

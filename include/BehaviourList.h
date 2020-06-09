@@ -10,13 +10,18 @@ class BehaviourList
 public:
     static BehaviourList& GetInstance();
 
-    std::vector<MonoBehaviour*>& Items();
+    const std::vector<MonoBehaviour*>& Items();
 
     void Add(MonoBehaviour* item);
 
     void Erase(MonoBehaviour* item);
     std::vector<MonoBehaviour*> MonoBehaviourList;
+    std::vector<std::vector<MonoBehaviour*>::iterator> MonoBehaviourListToRemove;
     static BehaviourList* Instance;
+    ~BehaviourList();
+protected:
+    void Apply();
+    friend class GameEngine;
 private:
     BehaviourList();
 };
