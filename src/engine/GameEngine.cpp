@@ -18,8 +18,9 @@ int GameEngine::Start()
         {
             item->Update();
         }
+        SDL_Delay(16);
         BehaviourList::GetInstance().Apply();
-        IsRunning = false;
+        //IsRunning = false;
     }
 
     return 0;
