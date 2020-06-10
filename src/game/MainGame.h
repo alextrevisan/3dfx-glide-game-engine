@@ -2,47 +2,26 @@
 #define MAINGAME_H
 #include <MonoBehaviour.h>
 #include <glide3x_dll.h>
+typedef struct {
+        float sow;		/* s texture ordinate (s over w) */
+        float tow;		/* t texture ordinate (t over w) */
+        float oow;		/* 1/w (used mipmapping - really 0xfff/w) */
+} GrTmuVertex;
+
+typedef struct {
+  float x, y, z;   /* x, y, z of screen space. z is ignored */
+  float ooz;       /* 65535/z (used for z buffering) */
+  float oow;       /* 1/w (used for w buffering) */
+  float r, g, b, a; /* red, green, blue, and alpha ([0..255.0]) */
+  GrTmuVertex tmuvtx[GLIDE_NUM_TMU];
+} GrVertex;
+
 typedef struct Vertex
 {
-  // x,y,z of vertex
-  float x;    // 0
-  float y;    // 4
-
-  float z;    // 8
-
-  float ooz;  // 12
-
-  float q;    // 16
-
-  // Vertex Color
-  float r;    // 20
-  float g;    // 24
-  float b;    // 28
-
-  // Texture Coordinates for tmu 0
-  float u0,v0;  // 32
-
-  // Texture Coordinates for tmu 1
-  float u1,v1;  // 40
-
-  // In how many polygons this vertex is present:
-  int NumPolys;
-
-  // pointer to list of polygon indices of polygons that have this
-  // vertex in common.
-  //fxePolygonIndex *PolygonIndices;
-
-	// Flag that indicates if this vertex must be performed
-	// lightning calculations on.
-	int Used;
+	GrVertex v1;
+	GrVertex v2;
+	GrVertex v3;
 } Vertex;
-
-typedef struct Triangle
-{
-	Vertex v1;
-	Vertex v2;
-	Vertex v3;
-} Triangle;
 
 class MainGame: public MonoBehaviour
 {
@@ -52,7 +31,11 @@ class MainGame: public MonoBehaviour
         void Update();
     protected:
         virtual ~MainGame();
-        Triangle GourTris;
+        Vertex GourTris;
+        GrTexInfo MipMap1;
+        // texture memory startaddress on the TexelFx chip
+        FxU32 TexStartAddress;
+        Gu3dfInfo TexInfo;
 };
 
 #endif // MAINGAME_H

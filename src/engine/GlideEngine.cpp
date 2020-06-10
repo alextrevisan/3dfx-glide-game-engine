@@ -1,5 +1,7 @@
 #include "GlideEngine.h"
 #include "glide3x_dll.h"
+
+#include <string_view>
 #include <cassert>
 #include <stdexcept>
 
@@ -14,14 +16,12 @@ GlideEngine::GlideEngine()
 
 int GlideEngine::VoodooType()
 {
-    const char *vstr;
-
-    vstr = grGetString(GR_HARDWARE);
-    if (!strcmp(vstr, "Voodoo2") ||
-            !strcmp(vstr, "Voodoo Banshee") ||
-            !strcmp(vstr, "Voodoo Graphics") ||
-            !strcmp(vstr, "Voodoo Rush") ||
-            !strcmp(vstr, "Voodoo5 (tm)"))
+    const std::string_view vstr = grGetString(GR_HARDWARE);
+    if (vstr == "Voodoo2" ||
+            vstr == "Voodoo Banshee" ||
+            vstr == "Voodoo Graphics" ||
+            vstr == "Voodoo Rush" ||
+            vstr == "Voodoo5 (tm)")
         return 1;
     return 0;
 }
@@ -34,7 +34,7 @@ void GlideEngine::InitSDLSubsystem()
 
     SDL_SysWMinfo wmInfo;
     SDL_GetWMInfo(&wmInfo);
-    hWndMain= wmInfo.window;
+    hWndMain = wmInfo.window;
 }
 
 bool GlideEngine::Has3dfxHardware()
