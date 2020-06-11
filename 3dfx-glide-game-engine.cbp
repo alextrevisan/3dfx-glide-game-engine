@@ -35,6 +35,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="glide/glide3x/h5/glide3/src/glide.h" />
+		<Unit filename="glide/swlibs/fxmisc/3dfx.h" />
 		<Unit filename="include/BehaviourList.h" />
 		<Unit filename="include/Component.h" />
 		<Unit filename="include/GameEngine.h" />
@@ -42,12 +44,14 @@
 		<Unit filename="include/GlideEngine.h" />
 		<Unit filename="include/MonoBehaviour.h" />
 		<Unit filename="include/Vector3.h" />
+		<Unit filename="include/glide3x_dll.h" />
 		<Unit filename="src/Component.cpp" />
 		<Unit filename="src/engine/BehaviourList.cpp" />
 		<Unit filename="src/engine/GameEngine.cpp" />
 		<Unit filename="src/engine/GameObject.cpp" />
 		<Unit filename="src/engine/GlideEngine.cpp" />
 		<Unit filename="src/engine/MonoBehaviour.cpp" />
+		<Unit filename="src/engine/glide3x_dll.cpp" />
 		<Unit filename="src/game/MainGame.cpp" />
 		<Unit filename="src/game/MainGame.h" />
 		<Unit filename="src/game/main.cpp" />
