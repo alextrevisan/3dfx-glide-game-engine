@@ -1,6 +1,7 @@
 #ifndef GLIDEENGINE_H
 #define GLIDEENGINE_H
 #define WIN32_LEAN_AND_MEAN
+#include <string_view>
 #include <windows.h>
 #include <glide.h>
 #include <SDL/SDL.h>
@@ -13,6 +14,13 @@ public:
     ~GlideEngine();
     HWND hWndMain;
     GrContext_t glideContext;
+
+    void SetTextureMode();
+    void SetFlatMode();
+    void setAlphaMode();
+    void setTextureAlphaMode();
+
+    static void LoadTexture(const char* filename);
 protected:
 
 private:
@@ -31,9 +39,14 @@ private:
     void SetupResolutions();
     void GlideSetupVertexLayout();
     void GlideSetupTexture();
+    void SetupTextures();
+
+
     GrContext_t gc = 0;
     GrResolution query, *resolutionList;
     GrScreenResolution_t resolution = GR_RESOLUTION_1024x768;
+    int width = 0, height = 0;
+    FxI32 wLimits[2];
 
     static constexpr int GL_VOODOO_UNDEF  = 1;
     static constexpr int GL_VOODOO        = 1;
@@ -41,45 +54,26 @@ private:
     static constexpr int GL_VOODOO2       = 3;
     static constexpr int GL_VOODOOBANSHEE = 4;
 
-    float scrXScale = 1027.0f;
-    float scrYScale = 768.0f;
-
-    char *consoleGrid;
-    int   consoleRows;
-    int   consoleColumns;
-    int   consoleX;
-    int   consoleY;
-    int   consoleColor;
-    float consoleOriginX;
-    float consoleOriginY;
-    float consoleCharWidth;
-    float consoleCharHeight;
-    static constexpr unsigned char GR_VERTEX_X_OFFSET =            0;
-    static constexpr unsigned char GR_VERTEX_Y_OFFSET =            1;
-    static constexpr unsigned char GR_VERTEX_OOZ_OFFSET =          2;
-    static constexpr unsigned char GR_VERTEX_OOW_OFFSET =          3;
-    static constexpr unsigned char GR_VERTEX_R_OFFSET =            4;
-    static constexpr unsigned char GR_VERTEX_G_OFFSET =            5;
-    static constexpr unsigned char GR_VERTEX_B_OFFSET =            6;
-    static constexpr unsigned char GR_VERTEX_A_OFFSET =            7;
-    static constexpr unsigned char GR_VERTEX_Z_OFFSET =            8;
-    static constexpr unsigned char GR_VERTEX_SOW_TMU0_OFFSET =     9;
-    static constexpr unsigned char GR_VERTEX_TOW_TMU0_OFFSET =     10;
-    static constexpr unsigned char GR_VERTEX_OOW_TMU0_OFFSET =     11;
-    static constexpr unsigned char GR_VERTEX_SOW_TMU1_OFFSET =     12;
-    static constexpr unsigned char GR_VERTEX_TOW_TMU1_OFFSET =     13;
-    static constexpr unsigned char GR_VERTEX_OOW_TMU1_OFFSET =     14;
-    #if (GLIDE_NUM_TMU > 2)
-    static constexpr unsigned char GR_VERTEX_SOW_TMU2_OFFSET =     15;
-    static constexpr unsigned char GR_VERTEX_TOW_TMU2_OFFSET =     16;
-    static constexpr unsigned char GR_VERTEX_OOW_TMU2_OFFSET =     17;
-    #endif
     BOOL IsWindowMode = FALSE;
     WINDOWPLACEMENT wpc;
     LONG HWNDStyle = 0;
     LONG HWNDStyleEx = 0;
 
     void FullScreenSwitch( );
+
+    static constexpr auto INITIAL_TEXARRAY_SIZE = 10;
+    struct Glide_Texture
+    {
+        GrTexInfo TexInfo;    //Glide texture size info
+        FxU32 TMU0_MemoryAddress;  //Texture map unit 0 address
+        FxU32 TMU1_MemoryAddress;  //Texture map unit 1 address
+        void *TextureData;	//Actual texture data
+    } ;
+    static Glide_Texture TextureArray[INITIAL_TEXARRAY_SIZE];
+    static unsigned short NumberOfTextures;
+    FxI32 NumberOfTMUs = 0;
+    static FxU32 TMU0_MemoryAddress;
+    static FxU32 Next_TMU0_MemoryAddress;
 };
 
 
