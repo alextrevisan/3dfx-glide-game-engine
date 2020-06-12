@@ -1,9 +1,9 @@
 #EXECUTABLE NAME
 TARGET = game.exe
 #MKDIR = md
-MKDIR = mkdir -p
+MKDIR = mkdir 
 #DEL = del /Q
-DEL = rm -rf
+DEL = del
 ##COMPILER
 CC = g++
 LD = g++

@@ -1,9 +1,15 @@
 #ifndef MAINGAME_H
 #define MAINGAME_H
-#include <Model3D.h>
-#include <MonoBehaviour.h>
-#include <glide3x_dll.h>
 
+#include <MonoBehaviour.h>
+#include <glide.h>
+
+typedef struct
+{
+    FxFloat x2d,y2d,q;          // To 2D converted coordinates.  Q = 1 / Z
+    FxFloat u,v;                // Texture Coordinates
+    FxFloat x,y,z;              // X,Y,Z ( note that these coordinates are NOT used by Glide )
+} Vertex;
 
 class MainGame: public MonoBehaviour
 {
@@ -13,14 +19,9 @@ class MainGame: public MonoBehaviour
         void Update();
     protected:
         virtual ~MainGame();
-        Vertex Triangle[3];
-        int vlist[3];
-        GrTexInfo MipMap1;
-        // texture memory startaddress on the TexelFx chip
-        FxU32 TexStartAddress;
-        Gu3dfInfo TexInfo;
+        Vertex v[8];
 
-        Model3D model;
 };
+
 
 #endif // MAINGAME_H

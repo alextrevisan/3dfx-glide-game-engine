@@ -106,7 +106,7 @@ void GlideEngine::InitGlideSubsystem()
     assert( VoodooType() );
     glideContext = grSstWinOpen((FxU32)hWndMain,
                                 resolution, GR_REFRESH_60Hz,
-                                GR_COLORFORMAT_RGBA,
+                                GR_COLORFORMAT_ARGB,
                                 GR_ORIGIN_LOWER_LEFT,
                                 2, 1);
     if (glideContext == 0)
@@ -117,14 +117,14 @@ void GlideEngine::InitGlideSubsystem()
     //FullScreenSwitch( );
 
     //Setup depth buffer
-    grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
+    /*grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
     grDepthMask(FXTRUE);
     grDepthBufferFunction(GR_CMP_LEQUAL);
     SetFlatMode();
 
     //Setup misc stuff
-    grSstOrigin(GR_ORIGIN_UPPER_LEFT);
-    grCoordinateSpace(GR_CLIP_COORDS);
+    //grSstOrigin(GR_ORIGIN_UPPER_LEFT);
+    //grCoordinateSpace(GR_CLIP_COORDS);
 
     GlideSetupVertexLayout();
 
@@ -134,7 +134,7 @@ void GlideEngine::InitGlideSubsystem()
     grBufferClear(0, 0, wLimits[1]);
     grConstantColorValue(255<<24);
 
-    SetupTextures();
+    SetupTextures();*/
 }
 
 void GlideEngine::SetTextureMode()

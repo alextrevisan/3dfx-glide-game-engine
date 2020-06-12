@@ -8,11 +8,12 @@ GameEngine::GameEngine()
 
 int GameEngine::Start()
 {
+    int totalFrames = 1200;
     for(MonoBehaviour* item: BehaviourList::GetInstance().Items())
     {
         item->Start();
     }
-    while(IsRunning)
+    while(IsRunning && totalFrames--)
     {
         for(MonoBehaviour* item: BehaviourList::GetInstance().Items())
         {

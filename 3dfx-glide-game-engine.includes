@@ -1,0 +1,7 @@
+include
+src/game
+glide/glide3x/h5/glide3/src
+glide/glide3x/h5/incsrc
+glide/swlibs/fxmisc
+3rd/include
+src/engine

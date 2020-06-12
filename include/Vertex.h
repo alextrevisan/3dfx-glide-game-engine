@@ -1,5 +1,7 @@
 #ifndef __VERTEX_H__
 #define __VERTEX_H__
+#include <glide.h>
+
 typedef struct {
   float  sow;                   /* s texture ordinate (s over w) */
   float  tow;                   /* t texture ordinate (t over w) */
