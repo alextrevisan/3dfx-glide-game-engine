@@ -8,7 +8,7 @@ GameEngine::GameEngine()
 
 int GameEngine::Start()
 {
-    int totalFrames = 1200;
+    int totalFrames = 600;
     for(MonoBehaviour* item: BehaviourList::GetInstance().Items())
     {
         item->Start();

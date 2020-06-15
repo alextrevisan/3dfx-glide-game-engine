@@ -5,57 +5,73 @@
 
 using namespace std;
 GrTexInfo bgDecal;
+FxU32 decaladdress;
 void guLoadTexture(char* filename)
 {
         Gu3dfInfo bgInfo;
 
-        // Get header info
         gu3dfGetInfo( filename, &bgInfo );
-        // Allocate some memory
         bgInfo.data = (char*)malloc( bgInfo.mem_required );
-        // Load the texture
         gu3dfLoad( filename, &bgInfo);
-        // Put everything from bgInfo to bgDecal ( the real texture var)
         bgDecal.smallLodLog2 = bgInfo.header.small_lod;
         bgDecal.largeLodLog2 = bgInfo.header.large_lod;
         bgDecal.aspectRatioLog2 =  bgInfo.header.aspect_ratio;
         bgDecal.data =		   bgInfo.data;
         bgDecal.format =	   bgInfo.header.format;
 
-        // Download from System RAM to card
-        grTexDownloadMipMap(GR_TMU0,grTexMinAddress(GR_TMU0),GR_MIPMAPLEVELMASK_BOTH,&bgDecal);
-        // Tell Glide that the texture is at the MINADDRESS of TMU ZERO
-        grTexSource(GR_TMU0,grTexMinAddress(GR_TMU0),GR_MIPMAPLEVELMASK_BOTH,&bgDecal);
-        free( bgInfo.data );
+        // We'll discuss this in 'Texture memory management'
+        decaladdress = grTexMinAddress(GR_TMU0) + grTexTextureMemRequired(GR_MIPMAPLEVELMASK_EVEN,
+                                                                          &bgDecal);
+
+        // Download from system memory to card for trilinear filtering
+        grTexDownloadMipMap(GR_TMU0,grTexMinAddress(GR_TMU0),GR_MIPMAPLEVELMASK_EVEN,&bgDecal);
+        grTexDownloadMipMap(GR_TMU1,grTexMinAddress(GR_TMU1),GR_MIPMAPLEVELMASK_ODD,&bgDecal);
+
+        // Download it again, at a further address for decal texture mapping
+        grTexDownloadMipMap(GR_TMU0,decaladdress,GR_MIPMAPLEVELMASK_BOTH,&bgDecal);
+
+        free(bgInfo.data);
 }
+
+
 
 MainGame::MainGame()
 {
 //    GlideEngine::LoadTexture("tex.3df");
     grVertexLayout(GR_PARAM_XY,    0,  GR_PARAM_ENABLE);
-        grVertexLayout(GR_PARAM_Q,      8, GR_PARAM_ENABLE);
-        grVertexLayout(GR_PARAM_ST0,   12, GR_PARAM_ENABLE);
+    grVertexLayout(GR_PARAM_Q,      8, GR_PARAM_ENABLE);
+    grVertexLayout(GR_PARAM_ST0,   12, GR_PARAM_ENABLE);
 
-        guLoadTexture("tex.3df");
+    guLoadTexture("miro.3df");
 
-        // No we don't want to alter texture : just use this.
-        grTexCombine(GR_TMU0,
-                     GR_COMBINE_FUNCTION_LOCAL,
-                     GR_COMBINE_FACTOR_NONE,
-                     GR_COMBINE_FUNCTION_LOCAL,
-                     GR_COMBINE_FACTOR_NONE,
-                     FXFALSE,
-                     FXFALSE );
+    // No we don't want to alter texture : just use this.
+    grTexCombine(GR_TMU0,
+                 GR_COMBINE_FUNCTION_LOCAL,
+                 GR_COMBINE_FACTOR_NONE,
+                 GR_COMBINE_FUNCTION_LOCAL,
+                 GR_COMBINE_FACTOR_NONE,
+                 FXFALSE,
+                 FXFALSE );
 
-        // Set up iterated colors
-        grColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
-                       GR_COMBINE_FACTOR_ONE,
-                       GR_COMBINE_LOCAL_NONE,
-                       GR_COMBINE_OTHER_TEXTURE,
-                       FXFALSE);
+    // Set up iterated colors
+    grColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+                   GR_COMBINE_FACTOR_ONE,
+                   GR_COMBINE_LOCAL_NONE,
+                   GR_COMBINE_OTHER_TEXTURE,
+                   FXFALSE);
 
-        // Cull hiden faces
-        grCullMode(GR_CULL_POSITIVE);
+    // Cull hiden faces
+    grCullMode(GR_CULL_POSITIVE);
+
+    /** ENABLE TEXTURE FILTERING BILINEAR **/
+    grTexFilterMode( 	GR_TMU0,
+        GR_TEXTUREFILTER_BILINEAR,
+        GR_TEXTUREFILTER_BILINEAR);
+
+    /** ENABLE TEXTURE MIPMAP BILINEAR **/
+    grTexMipMapMode( 	GR_TMU0,
+        GR_MIPMAP_NEAREST,
+        FXFALSE);
 
     // Set up coordinates and color
     v[0].x = -50.0f; v[0].y =  50.0f; v[0].z = -50.0f;
@@ -102,32 +118,128 @@ void DrawFace(Vertex a, Vertex b, Vertex c, Vertex d)
     grDrawTriangle(&a,&c,&d);
 }
 
+enum MipMapMode
+{
+    DISABLE = 0,
+    NEAREST = 1,
+    TRILINEAR = 2
+};
 
-
+long count = 0;
 void MainGame::Update()
 {
+    const auto MipMapMode = count++ < 200? DISABLE : count < 400 ? NEAREST : TRILINEAR;
+    switch (MipMapMode)
+    {
+        // No mapmaps, so Decal texture mapping on TMU_0 means :
+        case DISABLE : // No mipmaps for TMU 0
+                       grTexMipMapMode(GR_TMU0,
+                                       GR_MIPMAP_DISABLE,
+                                       FXFALSE);
+                       // Set the texture source on TMU 0 to decal
+                       grTexSource(GR_TMU0,
+                                   decaladdress,
+                                   GR_MIPMAPLEVELMASK_BOTH,
+                                   &bgDecal);
+                       // TMU 0 : perform decal texture mapping
+                       grTexCombine(GR_TMU0,
+                                    GR_COMBINE_FUNCTION_LOCAL,
+                                    GR_COMBINE_FACTOR_NONE,
+                                    GR_COMBINE_FUNCTION_LOCAL,
+                                    GR_COMBINE_FACTOR_NONE,
+                                    FXFALSE,
+                                    FXFALSE);
+                       // TMU 1 : goto sleep ( at least, the texture combine unit of TMU 1 does )
+                       grTexCombine(GR_TMU1,
+                                    GR_COMBINE_FUNCTION_NONE,
+                                    GR_COMBINE_FACTOR_NONE,
+                                    GR_COMBINE_FUNCTION_NONE,
+                                    GR_COMBINE_FACTOR_NONE,
+                                    FXFALSE,
+                                    FXFALSE);
+                       break;
+        // Nearest mipmapping on TMU_0 means :
+        case NEAREST : // Choose nearest mipmap on TMU 0
+                       grTexMipMapMode(GR_TMU0,
+                                       GR_MIPMAP_NEAREST,
+                                       FXFALSE);
+                       // Set the texture source on TMU 0 to decal
+                       grTexSource(GR_TMU0,
+                                   decaladdress,
+                                   GR_MIPMAPLEVELMASK_BOTH,
+                                   &bgDecal);
+                       // TMU 0 : perform decal texture mapping
+                       grTexCombine(GR_TMU0,
+                                    GR_COMBINE_FUNCTION_LOCAL,
+                                    GR_COMBINE_FACTOR_NONE,
+                                    GR_COMBINE_FUNCTION_LOCAL,
+                                    GR_COMBINE_FACTOR_NONE,
+                                    FXFALSE,
+                                    FXFALSE);
+                       // TMU 1 : goto sleep ( at least, the texture combine unit of TMU 1 does )
+                       grTexCombine(GR_TMU1,
+                                    GR_COMBINE_FUNCTION_NONE,
+                                    GR_COMBINE_FACTOR_NONE,
+                                    GR_COMBINE_FUNCTION_NONE,
+                                    GR_COMBINE_FACTOR_NONE,
+                                    FXFALSE,
+                                    FXFALSE);
+                       break;
+        // Nearest mipmapping on both TMUs + LOD blending means
+        case TRILINEAR : // Both TMUs perform nearest mipmapping + LOD blending
+                         grTexMipMapMode(GR_TMU0,
+                                         GR_MIPMAP_NEAREST,
+                                         FXTRUE);
+                         grTexMipMapMode(GR_TMU1,
+                                         GR_MIPMAP_NEAREST,
+                                         FXTRUE);
+                         // Even for TMU 0
+                         grTexSource(GR_TMU0,
+                                     grTexMinAddress(GR_TMU0),
+                                     GR_MIPMAPLEVELMASK_EVEN,
+                                     &bgDecal);
+                         // Odd for TMU 1
+                         grTexSource(GR_TMU1,
+                                     grTexMinAddress(GR_TMU1),
+                                     GR_MIPMAPLEVELMASK_ODD ,
+                                     &bgDecal);
+                         // Tmu 0 : Do that blending !
+                         grTexCombine(GR_TMU0,
+                                      GR_COMBINE_FUNCTION_BLEND,
+                                      GR_COMBINE_FACTOR_LOD_FRACTION,
+                                      GR_COMBINE_FUNCTION_BLEND,
+                                      GR_COMBINE_FACTOR_LOD_FRACTION,
+                                      FXFALSE,
+                                      FXFALSE);
+                         // Upstream TMU : decal
+                         grTexCombine(GR_TMU1,
+                                      GR_COMBINE_FUNCTION_LOCAL,
+                                      GR_COMBINE_FACTOR_NONE,
+                                      GR_COMBINE_FUNCTION_LOCAL,
+                                      GR_COMBINE_FACTOR_NONE,
+                                      FXFALSE,
+                                      FXFALSE);
+                       break;
+    }
+
     FxI32 wLimits;
     grGet(GR_WDEPTH_MIN_MAX, 8, &wLimits);
     grBufferClear(0x00FF0000,  0, wLimits);
 
-    FxFloat TempX;
-    FxFloat TempY;
-    FxFloat TempZ;
-    int i;
-    float rad = -3.14/180;
+    const float rad = count < 200? -3.14/180 : count < 400 ? 3.14/180 : -3.14/180;
 
-    for ( i = 0; i < 8; i++)
+    for (int  i = 0; i < 8; i++)
     {
-        TempX = v[i].x;
-        TempZ = v[i].z;
+        const FxFloat TempX = v[i].x;
+        const FxFloat TempZ = v[i].z;
         v[i].x = (FxFloat) (cos(rad)*TempX+sin(rad)*TempZ);
         v[i].z = (FxFloat)(-sin(rad)*TempX+cos(rad)*TempZ);
     }
 
-    for (i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++)
     {
-        TempY = v[i].y;
-        TempZ = v[i].z;
+        const FxFloat TempY = v[i].y;
+        const FxFloat TempZ = v[i].z;
         v[i].y = (FxFloat) (cos(rad)*TempY+sin(rad*1.2f)*TempZ);
         v[i].z = (FxFloat)(-sin(rad)*TempY+cos(rad*1.2f)*TempZ);
     }
