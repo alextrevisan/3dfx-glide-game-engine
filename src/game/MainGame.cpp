@@ -1,6 +1,8 @@
 #include "MainGame.h"
 #include <math.h>
+#include <chrono>
 
+#include <SDL/SDL.h>
 #include <glide.h>
 
 using namespace std;
@@ -127,6 +129,7 @@ enum MipMapMode
 long count = 0;
 void MainGame::Update()
 {
+    auto now = SDL_GetTicks();
     const auto MipMapMode = count++ < 200? DISABLE : count < 400 ? NEAREST : TRILINEAR;
     switch (MipMapMode)
     {
@@ -250,12 +253,19 @@ void MainGame::Update()
     DrawFace(v[2], v[6], v[7], v[3], depth);
     DrawFace(v[1], v[5], v[6], v[2], depth);
     DrawFace(v[0], v[3], v[7], v[4], depth);
-
+    auto end = SDL_GetTicks();
     grBufferSwap(1);
+
+    Median += end - now;
+
+    //SDL_WM_SetCaption(title, nullptr);
 }
 
 
 MainGame::~MainGame()
 {
+    char title[100];
+    snprintf(title, 100, "Execution ticks = %d\n", Median);
+    printf(title);
     //dtor
 }
