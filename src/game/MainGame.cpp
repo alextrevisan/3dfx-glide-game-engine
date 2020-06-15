@@ -6,7 +6,7 @@
 using namespace std;
 GrTexInfo bgDecal;
 FxU32 decaladdress;
-void guLoadTexture(char* filename)
+void guLoadTexture(const char* filename)
 {
         Gu3dfInfo bgInfo;
 
@@ -84,29 +84,28 @@ MainGame::MainGame()
     v[7].x = -50.0f; v[7].y = -50.0f; v[7].z =  50.0f;
 }
 
-void DrawFace(Vertex a, Vertex b, Vertex c, Vertex d)
+void DrawFace(Vertex a, Vertex b, Vertex c, Vertex d, const float depth)
 {
-
     // Perspective divisions
     // formulas : X2d = X3d / (Z3d * ZSCALE)
     //			  Y2d = Y3d / (Z3d * ZSCALE)
     // The +300 means the cube is at depth 300
     // The 320 and 240 set the cube in the center of the screen
 
-    a.x2d = 320 + a.x / (a.z+300) * 512; // These are the 3D to 2D conversions
-    a.y2d = 240 + a.y / (a.z+300) * 512;
-    b.x2d = 320 + b.x / (b.z+300) * 512;
-    b.y2d = 240 + b.y / (b.z+300) * 512;
-    c.x2d = 320 + c.x / (c.z+300) * 512;
-    c.y2d = 240 + c.y / (c.z+300) * 512;
-    d.x2d = 320 + d.x / (d.z+300) * 512;
-    d.y2d = 240 + d.y / (d.z+300) * 512;
+    a.x2d = 320 + a.x / (a.z+depth) * 512; // These are the 3D to 2D conversions
+    a.y2d = 240 + a.y / (a.z+depth) * 512;
+    b.x2d = 320 + b.x / (b.z+depth) * 512;
+    b.y2d = 240 + b.y / (b.z+depth) * 512;
+    c.x2d = 320 + c.x / (c.z+depth) * 512;
+    c.y2d = 240 + c.y / (c.z+depth) * 512;
+    d.x2d = 320 + d.x / (d.z+depth) * 512;
+    d.y2d = 240 + d.y / (d.z+depth) * 512;
 
     // Perspective correction : we need a q
-    a.q = 1 / (a.z+300); // Q = 1 / Z
-    b.q = 1 / (b.z+300);
-    c.q = 1 / (c.z+300);
-    d.q = 1 / (d.z+300);
+    a.q = 1 / (a.z+depth); // Q = 1 / Z
+    b.q = 1 / (b.z+depth);
+    c.q = 1 / (c.z+depth);
+    d.q = 1 / (d.z+depth);
 
     // Perspective
     a.u = 0   / a.z;    a.v = 0    / a.z;  // Give values to u and v AND DIVIDE THEM BY Z
@@ -243,14 +242,14 @@ void MainGame::Update()
         v[i].y = (FxFloat) (cos(rad)*TempY+sin(rad*1.2f)*TempZ);
         v[i].z = (FxFloat)(-sin(rad)*TempY+cos(rad*1.2f)*TempZ);
     }
-
+    float depth = (count < 300 ? count : 600 - count)/2.0f+150;
     // Render all 12 triangles
-    DrawFace(v[0], v[1], v[2], v[3]);
-    DrawFace(v[6], v[5], v[4], v[7]);
-    DrawFace(v[0], v[4], v[5], v[1]);
-    DrawFace(v[2], v[6], v[7], v[3]);
-    DrawFace(v[1], v[5], v[6], v[2]);
-    DrawFace(v[0], v[3], v[7], v[4]);
+    DrawFace(v[0], v[1], v[2], v[3], depth);
+    DrawFace(v[6], v[5], v[4], v[7], depth);
+    DrawFace(v[0], v[4], v[5], v[1], depth);
+    DrawFace(v[2], v[6], v[7], v[3], depth);
+    DrawFace(v[1], v[5], v[6], v[2], depth);
+    DrawFace(v[0], v[3], v[7], v[4], depth);
 
     grBufferSwap(1);
 }
