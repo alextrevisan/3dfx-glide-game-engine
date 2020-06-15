@@ -5,26 +5,9 @@
 #include <Vector3.h>
 #include <SDL/SDL.h>
 
-struct Color
-{
-    Color(const Color&) = delete;
-    static constexpr int blue = 3;
-};
-class Component
-{
-    public:
-    Component(){};
-    Component(const Component&) = delete;
-};
-class Light: public Component
-{
-    public:
-    Light():color(0){};
-    Light(const Light&) = delete;
-    int color;
-};
+#undef main /* We don’t want SDL to override our main() */
 
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
     try
     {

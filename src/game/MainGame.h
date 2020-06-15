@@ -20,7 +20,7 @@ class MainGame: public MonoBehaviour
     protected:
         virtual ~MainGame();
         Vertex v[8];
-        long tenPercentMax, tenPercentMin, Median = 0;
+        int tenPercentMax, tenPercentMin, Median = 0;
 };
 
 
