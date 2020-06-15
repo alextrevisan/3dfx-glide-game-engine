@@ -7,6 +7,7 @@ include/GameEngine.h
 include/GameObject.h
 include/GlideEngine.h
 include/GlideEngine.h
+include/MeshRenderer.h
 include/MonoBehaviour.h
 include/MonoBehaviour.h
 include/Vector3.h
@@ -22,6 +23,7 @@ src/engine/GameEngine.cpp
 src/engine/GameObject.cpp
 src/engine/GlideEngine.cpp
 src/engine/GlideEngine.cpp
+src/engine/MeshRenderer.cpp
 src/engine/MonoBehaviour.cpp
 src/engine/MonoBehaviour.cpp
 src/engine/glide3x_dll.cpp

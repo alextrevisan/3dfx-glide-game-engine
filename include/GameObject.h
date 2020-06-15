@@ -16,7 +16,7 @@ class GameObject
     {
         auto item = new T(args...);
         objects.emplace_back(item);
-        return item;
+        return *item;
     }
 
     struct transform
