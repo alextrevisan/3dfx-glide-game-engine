@@ -2,8 +2,8 @@
 TARGET = game.exe
 #MKDIR = md
 MKDIR = mkdir 
-DEL = del /Q
-#DEL = del
+#DEL = del /Q
+DEL = rm -rf
 ##COMPILER
 CC = g++
 LD = g++

@@ -258,20 +258,60 @@ void MainGame::Update()
     DrawFace(v[1], v[5], v[6], v[2], depth);
     DrawFace(v[0], v[3], v[7], v[4], depth);
     const float fNear = 0.1f;
-    const float fFar = 100.f;
+    const float fFar = 1000.f;
     const float fFov = 90.f;
     const float fAspectRatio = 800.f/600.f;
     const float fFovRad = 1.f / std::tan(fFov * 0.5f / 180.f * 3.1415f);
+    const float fTheta = 0.1;
     const Matrix4 matProj({{
                               {{fAspectRatio * fFovRad,0,0,0}},
                               {{0,fFovRad,0,0}},
                               {{0,0,fFar / (fFar - fNear), 1.0f}},
                               {{0,0,(-fFar * fNear) / (fFar - fNear),0}},
                           }});
-    for(auto tri: meshFilter.mesh)
+    const Matrix4 matRotZ({{
+                              {{std::cos(fTheta),std::sin(fTheta),0,0}},
+                              {{-std::sin(fTheta),std::cos(fTheta),0,0}},
+                              {{0,0,1,0}},
+                              {{0,0,0,1}},
+                          }}),
+                  MatRotX({{
+                              {{1,0,0,0}},
+                              {{0,std::cos(fTheta*0.5),std::sin(fTheta*0.5),0}},
+                              {{0,-std::sin(fTheta*0.5),std::cos(fTheta*0.5),0}},
+                              {{0,0,0,1}},
+                          }});
+
+
+    for(auto& tri: meshFilter.mesh)
     {
-        const Triangle projected = {matProj * tri[0], matProj * tri[1], matProj * tri[2]};
-        grDrawTriangle(&projected[0],&projected[1],&projected[2]);
+        auto translated = tri;
+        translated[0].z += 3;
+        translated[1].z += 3;
+        translated[2].z += 3;
+        Triangle projected{matProj * translated[0], matProj * translated[1], matProj * translated[2]};
+
+        projected = {matRotZ * projected[0], matRotZ * projected[1], matRotZ * projected[2]};
+        projected = {MatRotX * projected[0], MatRotX * projected[1], MatRotX * projected[2]};
+
+        projected[0].x += 1.0f; projected[0].y += 1.0f; projected[0].z += 1.0f;
+        projected[1].x += 1.0f; projected[1].y += 1.0f; projected[1].z += 1.0f;
+        projected[2].x += 1.0f; projected[2].y += 1.0f; projected[2].z += 1.0f;
+
+        projected[0].x *= 0.5f *300 ; projected[0].y *= 0.5f*400;
+        projected[1].x *= 0.5f *300 ; projected[1].y *= 0.5f*400;
+        projected[2].x *= 0.5f *300 ; projected[2].y *= 0.5f*400;
+
+
+        Vertex v1[3] {
+            {.x2d = projected[0].x, .y2d = projected[0].y, .q = projected[0].z},
+            {.x2d = projected[1].x, .y2d = projected[1].y, .q = projected[1].z},
+            {.x2d = projected[2].x, .y2d = projected[2].y, .q = projected[2].z},
+            };
+            v1[0].u = 0;    v1[0].v = 0;  // Give values to u and v AND DIVIDE THEM BY Z
+            v1[1].u = 0;    v1[1].v = 255  * v1[1].q;  //              or multiply by Q (rather do this)
+            v1[2].u = 255 * v1[2].q;    v1[2].v = 255  * v1[2].q;
+        grDrawTriangle(&v1[0],&v1[1],&v1[2]);
     }
     auto end = SDL_GetTicks();
     grBufferSwap(1);

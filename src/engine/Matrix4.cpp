@@ -19,8 +19,18 @@ Matrix4::Matrix4(std::array<std::array<float,4>, 4> m)
 
 Vector3 Matrix4::operator* ( const Vector3 &v ) const
 {
-    const float fInvW = 1.0f / ( m[3][0] * v.x + m[3][1] * v.y + m[3][2] * v.z + m[3][3] );
-    return {( m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z + m[0][3] ) * fInvW,
-            ( m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z + m[1][3] ) * fInvW,
-            ( m[2][0] * v.x + m[2][1] * v.y + m[2][2] * v.z + m[2][3] ) * fInvW};
+    const Vector3 o {
+        v.x * m[0][0] + v.y * m[1][0] + v.z * m[2][0] + m[3][0],
+        v.x * m[0][1] + v.y * m[1][1] + v.z * m[2][1] + m[3][1],
+        v.x * m[0][2] + v.y * m[1][2] + v.z * m[2][2] + m[3][2]
+    };
+
+    const float w = v.x * m[0][3] + v.y * m[1][3] + v.z * m[2][3] + m[3][3];
+
+    if (w != 0.0f)
+    {
+        return {o.x/w, o.y / w, o.z / w};
+    }
+    return o;
 }
+
