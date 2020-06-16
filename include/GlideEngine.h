@@ -44,7 +44,7 @@ private:
 
     GrContext_t gc = 0;
     GrResolution query, *resolutionList;
-    GrScreenResolution_t resolution = GR_RESOLUTION_1024x768;
+    GrScreenResolution_t resolution = GR_RESOLUTION_800x600;
     int width = 0, height = 0;
     FxI32 wLimits[2];
 

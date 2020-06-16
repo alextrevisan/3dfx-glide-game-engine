@@ -1,5 +1,16 @@
 #ifndef __VERTEX_H__
 #define __VERTEX_H__
+
+#include <glide.h>
+
+typedef struct
+{
+    FxFloat x2d,y2d,q;          // To 2D converted coordinates.  Q = 1 / Z
+    FxFloat u,v;                // Texture Coordinates
+    FxFloat x,y,z;              // X,Y,Z ( note that these coordinates are NOT used by Glide )
+} Vertex;
+
+#if 0
 #include <glide.h>
 
 typedef struct {
@@ -32,4 +43,5 @@ enum PolyShadingType{PolyShadingFlat, PolyShadingGouraud};
 enum PolyFaceType{PolyFacePlain, PolyFaceTextured};
 enum PolyMediumType{PolyMediumSolid, PolyMediumAlpha};
 enum LastStateType{Last_NONE, Last_FLAT, Last_TEXTURE, Last_ALPHA, Last_TEXTURE_ALPHA};
+#endif
 #endif // __VERTEX_H__

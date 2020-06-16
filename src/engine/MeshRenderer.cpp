@@ -5,3 +5,8 @@ MeshRenderer::MeshRenderer()
 {
 
 }
+
+void MeshRenderer::Update()
+{
+
+}

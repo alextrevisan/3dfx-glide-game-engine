@@ -1,9 +1,9 @@
 #ifndef MONOBEHAVIOUR_H
 #define MONOBEHAVIOUR_H
 #include <GlideEngine.h>
-
+#include <Component.h>
 class GameEngine;
-class MonoBehaviour
+class MonoBehaviour: public Component
 {
     public:
         MonoBehaviour();

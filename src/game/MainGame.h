@@ -2,14 +2,10 @@
 #define MAINGAME_H
 
 #include <MonoBehaviour.h>
+#include <GameObject.h>
 #include <glide.h>
-
-typedef struct
-{
-    FxFloat x2d,y2d,q;          // To 2D converted coordinates.  Q = 1 / Z
-    FxFloat u,v;                // Texture Coordinates
-    FxFloat x,y,z;              // X,Y,Z ( note that these coordinates are NOT used by Glide )
-} Vertex;
+#include <Vertex.h>
+#include <MeshFilter.h>
 
 class MainGame: public MonoBehaviour
 {
@@ -21,6 +17,8 @@ class MainGame: public MonoBehaviour
         virtual ~MainGame();
         Vertex v[8];
         int tenPercentMax, tenPercentMin, Median = 0;
+        GameObject newCube{"CUBE"};
+        MeshFilter meshFilter;
 };
 
 

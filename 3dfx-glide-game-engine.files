@@ -7,6 +7,8 @@ include/GameEngine.h
 include/GameObject.h
 include/GlideEngine.h
 include/GlideEngine.h
+include/Matrix4.h
+include/MeshFilter.h
 include/MeshRenderer.h
 include/MonoBehaviour.h
 include/MonoBehaviour.h
@@ -23,6 +25,8 @@ src/engine/GameEngine.cpp
 src/engine/GameObject.cpp
 src/engine/GlideEngine.cpp
 src/engine/GlideEngine.cpp
+src/engine/Matrix4.cpp
+src/engine/MeshFilter.cpp
 src/engine/MeshRenderer.cpp
 src/engine/MonoBehaviour.cpp
 src/engine/MonoBehaviour.cpp

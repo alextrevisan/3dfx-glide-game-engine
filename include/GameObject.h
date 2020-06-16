@@ -15,7 +15,7 @@ class GameObject
     constexpr T& AddComponent(N...args)
     {
         auto item = new T(args...);
-        objects.emplace_back(item);
+        objects.push_back(item);
         return *item;
     }
 

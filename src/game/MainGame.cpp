@@ -1,9 +1,12 @@
 #include "MainGame.h"
-#include <math.h>
+#include <cmath>
 #include <chrono>
 
 #include <SDL/SDL.h>
 #include <glide.h>
+
+#include <MeshFilter.h>
+#include <Matrix4.h>
 
 using namespace std;
 GrTexInfo bgDecal;
@@ -84,6 +87,7 @@ MainGame::MainGame()
     v[5].x =  50.0f; v[5].y =  50.0f; v[5].z =  50.0f;
     v[6].x =  50.0f; v[6].y = -50.0f; v[6].z =  50.0f;
     v[7].x = -50.0f; v[7].y = -50.0f; v[7].z =  50.0f;
+    meshFilter = newCube.AddComponent<MeshFilter>();
 }
 
 void DrawFace(Vertex a, Vertex b, Vertex c, Vertex d, const float depth)
@@ -253,6 +257,22 @@ void MainGame::Update()
     DrawFace(v[2], v[6], v[7], v[3], depth);
     DrawFace(v[1], v[5], v[6], v[2], depth);
     DrawFace(v[0], v[3], v[7], v[4], depth);
+    const float fNear = 0.1f;
+    const float fFar = 100.f;
+    const float fFov = 90.f;
+    const float fAspectRatio = 800.f/600.f;
+    const float fFovRad = 1.f / std::tan(fFov * 0.5f / 180.f * 3.1415f);
+    const Matrix4 matProj({{
+                              {{fAspectRatio * fFovRad,0,0,0}},
+                              {{0,fFovRad,0,0}},
+                              {{0,0,fFar / (fFar - fNear), 1.0f}},
+                              {{0,0,(-fFar * fNear) / (fFar - fNear),0}},
+                          }});
+    for(auto tri: meshFilter.mesh)
+    {
+        const Triangle projected = {matProj * tri[0], matProj * tri[1], matProj * tri[2]};
+        grDrawTriangle(&projected[0],&projected[1],&projected[2]);
+    }
     auto end = SDL_GetTicks();
     grBufferSwap(1);
 

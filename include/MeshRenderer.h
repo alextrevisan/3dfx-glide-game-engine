@@ -3,11 +3,12 @@
 
 #include <GameObject.h>
 #include <MonoBehaviour.h>
-class MeshRenderer: public GameObject
+class MeshRenderer: public GameObject, MonoBehaviour
 {
 public:
     MeshRenderer();
     ~MeshRenderer(){};
+    void Update() final;
 
 };
 
