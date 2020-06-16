@@ -43,6 +43,8 @@
 		<Unit filename="include/GameEngine.h" />
 		<Unit filename="include/GameObject.h" />
 		<Unit filename="include/GlideEngine.h" />
+		<Unit filename="include/Matrix4.h" />
+		<Unit filename="include/MeshFilter.h" />
 		<Unit filename="include/MeshRenderer.h" />
 		<Unit filename="include/MonoBehaviour.h" />
 		<Unit filename="include/Vector3.h" />
@@ -53,6 +55,8 @@
 		<Unit filename="src/engine/GameEngine.cpp" />
 		<Unit filename="src/engine/GameObject.cpp" />
 		<Unit filename="src/engine/GlideEngine.cpp" />
+		<Unit filename="src/engine/Matrix4.cpp" />
+		<Unit filename="src/engine/MeshFilter.cpp" />
 		<Unit filename="src/engine/MeshRenderer.cpp" />
 		<Unit filename="src/engine/MonoBehaviour.cpp" />
 		<Unit filename="src/engine/glide3x_dll.cpp" />
