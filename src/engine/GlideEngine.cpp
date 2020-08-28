@@ -15,6 +15,7 @@ GlideEngine::GlideEngine()
 int GlideEngine::VoodooType()
 {
     const std::string_view vstr = grGetString(GR_HARDWARE);
+    printf("voodoo found: %s\n",vstr.data());
     if (vstr == "Voodoo2" ||
             vstr == "Voodoo Banshee" ||
             vstr == "Voodoo Graphics" ||
@@ -102,8 +103,8 @@ void GlideEngine::InitGlideSubsystem()
 
     grGlideInit();
     grSstSelect(0);
-    SetupResolutions();
-    assert( VoodooType() );
+    //SetupResolutions();
+    VoodooType();
     glideContext = grSstWinOpen((FxU32)hWndMain,
                                 resolution, GR_REFRESH_60Hz,
                                 GR_COLORFORMAT_ARGB,

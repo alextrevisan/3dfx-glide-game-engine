@@ -1,7 +1,7 @@
 #EXECUTABLE NAME
 TARGET = game.exe
-#MKDIR = md
-MKDIR = mkdir 
+#MKDIR = cmd /E:ON /C md
+MKDIR = mkdir
 #DEL = del /Q
 DEL = rm -rf
 ##COMPILER

@@ -16,7 +16,7 @@ class MainGame: public MonoBehaviour
     protected:
         virtual ~MainGame();
         Vertex v[8];
-        int tenPercentMax, tenPercentMin, Median = 0;
+        int tenPercentMax, tenPercentMin, TotalTicks = 0;
         GameObject newCube{"CUBE"};
         MeshFilter meshFilter;
 };

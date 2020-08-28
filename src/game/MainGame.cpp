@@ -316,7 +316,7 @@ void MainGame::Update()
     auto end = SDL_GetTicks();
     grBufferSwap(1);
 
-    Median += end - now;
+    TotalTicks += end - now;
 
     //SDL_WM_SetCaption(title, nullptr);
 }
@@ -325,7 +325,7 @@ void MainGame::Update()
 MainGame::~MainGame()
 {
     char title[100];
-    snprintf(title, 100, "Execution ticks = %d\n", Median);
+    snprintf(title, 100, "Execution ticks = %d\n", TotalTicks);
     printf(title);
     //dtor
 }
